@@ -5,6 +5,9 @@ from __future__ import annotations
 from identity_matching.id_matching import (
     extract_id_number,
     extract_passport_number,
+    fields_id_match,
+    find_conflicting_values,
+    ids_match,
     normalize_id_number,
 )
 
@@ -68,3 +71,43 @@ class TestExtractPassportNumber:
 
     def test_returns_none_when_nothing_found(self):
         assert extract_passport_number({"area": "100 sqm"}) is None
+
+
+class TestIdsMatch:
+    def test_identical_ids_match(self):
+        assert ids_match("784111111111111", "784111111111111") is True
+
+    def test_different_ids_do_not_match(self):
+        assert ids_match("784111111111111", "784222222222222") is False
+
+
+class TestFieldsIdMatch:
+    def test_matches_on_equal_extracted_ids(self):
+        front = {"emirates_id": "784-1111-1111111-1"}
+        back = {"machine_readable_zone": ["IDARE784111111111111<<<<<<<<<<<<<"]}
+        assert fields_id_match(front, back) is True
+
+    def test_does_not_match_different_ids(self):
+        front = {"emirates_id": "784-1111-1111111-1"}
+        back = {"emirates_id": "784-2222-2222222-2"}
+        assert fields_id_match(front, back) is False
+
+    def test_returns_none_when_either_side_has_no_id(self):
+        front = {"emirates_id": "784-1111-1111111-1"}
+        back = {"card_number": "123"}
+        assert fields_id_match(front, back) is None
+
+
+class TestFindConflictingValues:
+    def test_no_conflict_when_all_values_agree(self):
+        assert find_conflicting_values({"id front": "784111111111111", "full id": "784111111111111"}) is None
+
+    def test_no_conflict_with_a_single_source(self):
+        assert find_conflicting_values({"id front": "784111111111111"}) is None
+
+    def test_empty_mapping_has_no_conflict(self):
+        assert find_conflicting_values({}) is None
+
+    def test_conflict_when_values_differ(self):
+        values = {"id front": "784111111111111", "passport": "784222222222222"}
+        assert find_conflicting_values(values) == values

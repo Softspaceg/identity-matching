@@ -76,3 +76,33 @@ def extract_passport_number(fields: dict) -> str | None:
     if not raw:
         return None
     return re.sub(r"\s+", "", str(raw)).upper()
+
+
+# ── Comparison ────────────────────────────────────────────────────────────────
+
+def ids_match(id_a: str, id_b: str) -> bool:
+    """Decide whether two normalized ID/passport numbers refer to the same document."""
+    return id_a == id_b
+
+
+def fields_id_match(fields_a: dict, fields_b: dict) -> bool | None:
+    """
+    Compare the primary extracted Emirates ID number of two extracted_data dicts.
+    Returns None when either side has no extractable ID number.
+    """
+    id_a = extract_id_number(fields_a)
+    id_b = extract_id_number(fields_b)
+    if id_a and id_b:
+        return ids_match(id_a, id_b)
+    return None
+
+
+def find_conflicting_values(values_by_source: dict[str, str]) -> dict[str, str] | None:
+    """
+    Given an exact-match field's extracted value keyed by source label (e.g. a
+    document type), return the same mapping if more than one distinct value is
+    present -- a conflict across sources that should all agree -- else None.
+    """
+    if len(set(values_by_source.values())) <= 1:
+        return None
+    return values_by_source

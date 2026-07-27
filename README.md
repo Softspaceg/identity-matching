@@ -23,16 +23,22 @@ their own fallback behaviour on top.
 
 ## Using this from another project
 
-This isn't published to a package index yet — install it in editable mode
-from its local path, or reference it directly in `requirements.txt`:
+Not published to PyPI — install straight from this repo, pinned to a tag:
 
 ```
-# requirements.txt, from a sibling project directory
--e ../identity-matching
+# requirements.txt
+git+https://github.com/Softspaceg/identity-matching.git@v0.1.0
+```
+
+```toml
+# pyproject.toml
+dependencies = [
+    "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.1.0",
+]
 ```
 
 ```bash
-pip install -e ../identity-matching
+pip install "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.1.0"
 ```
 
 ```python
@@ -40,9 +46,16 @@ from identity_matching.name_matching import extract_name, names_match
 from identity_matching.id_matching import extract_id_number
 ```
 
-Once this repo has a remote, swap the path reference for a git URL
-(`identity-matching @ git+https://.../identity-matching.git@<tag>`) so
-deployments don't depend on a sibling checkout on disk.
+Docker images need `git` installed in the build stage for pip to clone this
+(the repo is public, so no credentials are needed either locally or in CI).
+
+## Releasing a new version
+
+1. Bump `version` in `pyproject.toml`.
+2. Commit, then tag: `git tag -a vX.Y.Z -m "..."` and `git push origin main --tags`.
+3. Bump the `@vX.Y.Z` pin in every consuming project's `requirements.txt` /
+   `pyproject.toml` and reinstall — the pin is what makes upgrades explicit
+   and reviewable instead of every deploy silently picking up `main`.
 
 ## Development
 

@@ -26,7 +26,8 @@ class TestIdsMatch:
 
 class TestFindConflictingValues:
     def test_no_conflict_when_all_values_agree(self):
-        assert find_conflicting_values({"id front": "784111111111111", "full id": "784111111111111"}) is None
+        values = {"id front": "784111111111111", "full id": "784111111111111"}
+        assert find_conflicting_values(values) is None
 
     def test_no_conflict_with_a_single_source(self):
         assert find_conflicting_values({"id front": "784111111111111"}) is None

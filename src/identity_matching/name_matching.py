@@ -52,6 +52,9 @@ def best_name_match(target_name: str, candidate_names: list[str]) -> NameMatch |
     if not candidate_names:
         return None
     return max(
-        (NameMatch(candidate, name_similarity(target_name, candidate)) for candidate in candidate_names),
+        (
+            NameMatch(candidate, name_similarity(target_name, candidate))
+            for candidate in candidate_names
+        ),
         key=lambda match: match.score,
     )

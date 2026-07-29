@@ -1,3 +1,3 @@
 """identity-matching — shared name and ID/passport number matching for identity-document pipelines."""
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"

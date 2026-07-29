@@ -1,9 +1,10 @@
 # identity-matching
 
-Single source of truth for matching person names and ID/passport numbers.
-Shared across `ocr-pipeline` and `identity-verification` so that a change to
-the matching method — the normalization rules, the similarity algorithm, the
-decision threshold — happens once and takes effect in every consuming app.
+Single source of truth for matching person names, ID/passport numbers, and
+alphanumeric reference codes. Shared across `ocr-pipeline`, `asico-pm`, and
+`identity-verification` so that a change to the matching method — the
+normalization rules, the similarity algorithm, the decision threshold —
+happens once and takes effect in every consuming app.
 
 **Scope: matching only, not extraction.** This package takes already-extracted
 values (a name string, an ID number string, a list of candidate names) and
@@ -22,6 +23,11 @@ can diverge over time even though the matching decision they need should not.
 - `identity_matching.id_matching` — `normalize_id_number` (validates the
   15-digit Emirates ID shape), `ids_match` (exact-match decision),
   `find_conflicting_values` (do N sources agree on one exact-match value?).
+- `identity_matching.code_matching` — `normalize_code` (uppercase, strip
+  whitespace/dashes/underscores; unlike `normalize_id_number`, not restricted
+  to 15 digits), `codes_match` (exact-match decision) — for reference codes
+  like contract numbers or unit numbers, where a one-character difference is
+  a different record, not "close enough" the way a fuzzy-matched name can be.
 
 Comparison functions return `True` (match), `False` (no match), or `None`
 (not enough data to decide) so callers can layer their own fallback behaviour
@@ -33,23 +39,24 @@ Not published to PyPI — install straight from this repo, pinned to a tag:
 
 ```
 # requirements.txt
-git+https://github.com/Softspaceg/identity-matching.git@v0.3.0
+git+https://github.com/Softspaceg/identity-matching.git@v0.4.0
 ```
 
 ```toml
 # pyproject.toml
 dependencies = [
-    "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.3.0",
+    "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.4.0",
 ]
 ```
 
 ```bash
-pip install "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.3.0"
+pip install "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.4.0"
 ```
 
 ```python
 from identity_matching.name_matching import names_match, best_name_match
 from identity_matching.id_matching import ids_match
+from identity_matching.code_matching import codes_match
 
 # Extraction stays in your own app -- pull the values out of your document
 # shape however that shape works, then hand the plain values to this package.

@@ -15,6 +15,14 @@ class TestNormalizeIdNumber:
     def test_empty_string_returns_none(self):
         assert normalize_id_number("") is None
 
+    def test_converts_arabic_indic_digits_to_western(self):
+        assert normalize_id_number("٧٨٤-١١١١-١١١١١١١-١") == "784111111111111"
+
+    def test_arabic_indic_and_western_forms_of_the_same_id_match(self):
+        assert normalize_id_number("٧٨٤-١١١١-١١١١١١١-١") == normalize_id_number(
+            "784-1111-1111111-1"
+        )
+
 
 class TestIdsMatch:
     def test_identical_ids_match(self):

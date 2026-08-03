@@ -20,9 +20,10 @@ can diverge over time even though the matching decision they need should not.
 - `identity_matching.name_matching` — `normalize_name`, `name_similarity`
   (fuzzy ratio, word-order insensitive), `names_match` (threshold decision),
   `best_name_match` (best-scoring candidate out of several).
-- `identity_matching.id_matching` — `normalize_id_number` (validates the
-  15-digit Emirates ID shape), `ids_match` (exact-match decision),
-  `find_conflicting_values` (do N sources agree on one exact-match value?).
+- `identity_matching.id_matching` — `normalize_id_number` (converts
+  Arabic-Indic digits to Western and validates the 15-digit Emirates ID
+  shape), `ids_match` (exact-match decision), `find_conflicting_values` (do
+  N sources agree on one exact-match value?).
 - `identity_matching.code_matching` — `normalize_code` (uppercase, strip
   whitespace/dashes/underscores; unlike `normalize_id_number`, not restricted
   to 15 digits), `codes_match` (exact-match decision) — for reference codes

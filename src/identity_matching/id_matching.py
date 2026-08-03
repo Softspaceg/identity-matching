@@ -14,8 +14,16 @@ import re
 
 
 def normalize_id_number(raw: str) -> str | None:
-    """Strip non-digits; return the value only if exactly 15 digits remain."""
-    digits = re.sub(r"\D", "", raw)
+    """Convert Arabic-Indic digits to Western, strip remaining non-digits,
+    and return the value only if exactly 15 digits remain.
+
+    The Arabic-Indic conversion matters because Python's `\\D` (non-digit)
+    already treats Arabic-Indic digits as digits, so they'd otherwise pass
+    the length check but never equal the Western-digit spelling of the same
+    number -- documents extracted with Arabic-Indic numerals wouldn't match
+    the same ID written in Western digits."""
+    western = raw.translate(str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789"))
+    digits = re.sub(r"\D", "", western)
     return digits if len(digits) == 15 else None
 
 

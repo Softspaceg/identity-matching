@@ -14,6 +14,15 @@ class TestNormalizeName:
     def test_lowercases_strips_punctuation_collapses_whitespace(self):
         assert normalize_name("  John   O'Smith! ") == "john osmith"
 
+    def test_strips_leading_honorific(self):
+        assert normalize_name("Mr. Raza Abbas Rizvi") == "raza abbas rizvi"
+
+    def test_strips_honorific_anywhere(self):
+        assert normalize_name("Dr Jane Smith Prof") == "jane smith"
+
+    def test_honorific_only_matches_whole_token(self):
+        assert normalize_name("Mrs Drake") == "drake"
+
 
 class TestNameSimilarity:
     def test_word_order_insensitive(self):

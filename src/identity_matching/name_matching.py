@@ -15,10 +15,29 @@ from dataclasses import dataclass
 
 from rapidfuzz import fuzz
 
+HONORIFIC_TITLES = frozenset(
+    {
+        "mr",
+        "mrs",
+        "ms",
+        "miss",
+        "mx",
+        "dr",
+        "prof",
+        "eng",
+        "sheikh",
+        "sheikha",
+        "sir",
+        "madam",
+    }
+)
+
 
 def normalize_name(name: str) -> str:
-    """Lowercase, remove punctuation, collapse whitespace."""
-    return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", "", name.lower())).strip()
+    """Lowercase, remove punctuation, strip honorific titles, collapse whitespace."""
+    cleaned = re.sub(r"[^\w\s]", "", name.lower())
+    tokens = [token for token in cleaned.split() if token not in HONORIFIC_TITLES]
+    return " ".join(tokens)
 
 
 def name_similarity(first: str, second: str) -> float:

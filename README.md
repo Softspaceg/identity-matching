@@ -29,6 +29,12 @@ can diverge over time even though the matching decision they need should not.
   to 15 digits), `codes_match` (exact-match decision) — for reference codes
   like contract numbers or unit numbers, where a one-character difference is
   a different record, not "close enough" the way a fuzzy-matched name can be.
+- `identity_matching.text_matching` — `normalize_text`, `text_similarity`
+  (fuzzy ratio, word-order insensitive), `texts_match` (threshold decision) —
+  the same fuzzy engine as `name_matching`, for descriptive free text that
+  isn't a person's name (community, building name, property type,
+  nationality) and so shouldn't go through name-specific normalization
+  (honorific stripping).
 
 Comparison functions return `True` (match), `False` (no match), or `None`
 (not enough data to decide) so callers can layer their own fallback behaviour

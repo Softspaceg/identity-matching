@@ -1,10 +1,11 @@
-# identity-matching
+# matching-utils
 
-Single source of truth for matching person names, ID/passport numbers, and
-alphanumeric reference codes. Shared across `ocr-pipeline`, `asico-pm`, and
-`identity-verification` so that a change to the matching method — the
-normalization rules, the similarity algorithm, the decision threshold —
-happens once and takes effect in every consuming app.
+Single source of truth for matching person names, ID/passport numbers,
+alphanumeric reference codes, and descriptive free text. Shared across
+`ocr-pipeline`, `asico-pm`, `identity-verification`, `identity-extraction`,
+and `dld` so that a change to the matching method — the normalization rules,
+the similarity algorithm, the decision threshold — happens once and takes
+effect in every consuming app.
 
 **Scope: matching only, not extraction.** This package takes already-extracted
 values (a name string, an ID number string, a list of candidate names) and
@@ -17,19 +18,19 @@ can diverge over time even though the matching decision they need should not.
 
 ## Modules
 
-- `identity_matching.name_matching` — `normalize_name`, `name_similarity`
+- `matching_utils.name_matching` — `normalize_name`, `name_similarity`
   (fuzzy ratio, word-order insensitive), `names_match` (threshold decision),
   `best_name_match` (best-scoring candidate out of several).
-- `identity_matching.id_matching` — `normalize_id_number` (converts
+- `matching_utils.id_matching` — `normalize_id_number` (converts
   Arabic-Indic digits to Western and validates the 15-digit Emirates ID
   shape), `ids_match` (exact-match decision), `find_conflicting_values` (do
   N sources agree on one exact-match value?).
-- `identity_matching.code_matching` — `normalize_code` (uppercase, strip
+- `matching_utils.code_matching` — `normalize_code` (uppercase, strip
   whitespace/dashes/underscores; unlike `normalize_id_number`, not restricted
   to 15 digits), `codes_match` (exact-match decision) — for reference codes
   like contract numbers or unit numbers, where a one-character difference is
   a different record, not "close enough" the way a fuzzy-matched name can be.
-- `identity_matching.text_matching` — `normalize_text`, `text_similarity`
+- `matching_utils.text_matching` — `normalize_text`, `text_similarity`
   (fuzzy ratio, word-order insensitive), `texts_match` (threshold decision) —
   the same fuzzy engine as `name_matching`, for descriptive free text that
   isn't a person's name (community, building name, property type,
@@ -46,36 +47,42 @@ Not published to PyPI — install straight from this repo, pinned to a tag:
 
 ```
 # requirements.txt
-git+https://github.com/Softspaceg/identity-matching.git@v0.4.0
+matching-utils @ git+https://github.com/Softspaceg/matching-utils.git@v1.0.0
 ```
 
 ```toml
 # pyproject.toml
 dependencies = [
-    "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.4.0",
+    "matching-utils @ git+https://github.com/Softspaceg/matching-utils.git@v1.0.0",
 ]
 ```
 
 ```bash
-pip install "identity-matching @ git+https://github.com/Softspaceg/identity-matching.git@v0.4.0"
+pip install "matching-utils @ git+https://github.com/Softspaceg/matching-utils.git@v1.0.0"
 ```
 
 ```python
-from identity_matching.name_matching import names_match, best_name_match
-from identity_matching.id_matching import ids_match
-from identity_matching.code_matching import codes_match
+from matching_utils.name_matching import names_match, best_name_match
+from matching_utils.id_matching import ids_match
+from matching_utils.code_matching import codes_match
+from matching_utils.text_matching import texts_match
 
 # Extraction stays in your own app -- pull the values out of your document
 # shape however that shape works, then hand the plain values to this package.
 is_same_person = names_match(my_extracted_name_a, my_extracted_name_b, threshold=0.85)
 ```
 
+> Renamed from `identity-matching` in v1.0.0 (previously imported as
+> `identity_matching`). The old repo URL redirects, but every consuming
+> project's pin should be updated to the new URL/name directly rather than
+> relying on the redirect.
+
 Docker images need `git` installed in the build stage for pip to clone this
 (the repo is public, so no credentials are needed either locally or in CI).
 
 ## Releasing a new version
 
-1. Bump `version` in `pyproject.toml` (and `src/identity_matching/__init__.py`).
+1. Bump `version` in `pyproject.toml` (and `src/matching_utils/__init__.py`).
 2. Commit, then tag: `git tag -a vX.Y.Z -m "..."` and `git push origin main --tags`.
 3. Bump the `@vX.Y.Z` pin in every consuming project's `requirements.txt` /
    `pyproject.toml` and reinstall — the pin is what makes upgrades explicit

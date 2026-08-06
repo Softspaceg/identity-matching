@@ -1,8 +1,8 @@
-"""Tests for identity_matching.name_matching — normalization and fuzzy name comparison."""
+"""Tests for matching_utils.name_matching — normalization and fuzzy name comparison."""
 
 from __future__ import annotations
 
-from identity_matching.name_matching import (
+from matching_utils.name_matching import (
     best_name_match,
     name_similarity,
     names_match,

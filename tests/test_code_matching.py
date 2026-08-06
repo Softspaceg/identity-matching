@@ -1,8 +1,8 @@
-"""Tests for identity_matching.code_matching — reference code normalization and comparison."""
+"""Tests for matching_utils.code_matching — reference code normalization and comparison."""
 
 from __future__ import annotations
 
-from identity_matching.code_matching import codes_match, normalize_code
+from matching_utils.code_matching import codes_match, normalize_code
 
 
 class TestNormalizeCode:

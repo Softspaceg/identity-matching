@@ -1,8 +1,8 @@
-"""Tests for identity_matching.id_matching — ID/passport number normalization and comparison."""
+"""Tests for matching_utils.id_matching — ID/passport number normalization and comparison."""
 
 from __future__ import annotations
 
-from identity_matching.id_matching import find_conflicting_values, ids_match, normalize_id_number
+from matching_utils.id_matching import find_conflicting_values, ids_match, normalize_id_number
 
 
 class TestNormalizeIdNumber:

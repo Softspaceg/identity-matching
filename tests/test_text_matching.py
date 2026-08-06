@@ -1,8 +1,8 @@
-"""Tests for identity_matching.text_matching — normalization and fuzzy free-text comparison."""
+"""Tests for matching_utils.text_matching — normalization and fuzzy free-text comparison."""
 
 from __future__ import annotations
 
-from identity_matching.text_matching import normalize_text, text_similarity, texts_match
+from matching_utils.text_matching import normalize_text, text_similarity, texts_match
 
 
 class TestNormalizeText:
